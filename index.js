@@ -3,11 +3,18 @@ const mongoose = require('mongoose');
 const Product = require('./models/product.model.js')
 const app = express();
 
+// middleware
 app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
+
+// routes
+app.use("/api/products", productRoute);
+ 
 app.get('/', (req, res) =>{
     res.send('Hello world');
 });
+
 
 app.get('/api/products', async (req, res) => {
     try {
@@ -27,7 +34,7 @@ app.post('/api/products', async (req, res) => {
     }
 });
 
-app.get('/api/product/:id', async (req, res) => {
+app.get('/api/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const product = await Product.findById(id);
@@ -37,7 +44,7 @@ app.get('/api/product/:id', async (req, res) => {
     }
 });
 
-app.put('/api/product/:id', async (req, res) => {
+app.put('/api/products/:id', async (req, res) => {
     try {
         const {id} = req.params;
 
@@ -53,6 +60,22 @@ app.put('/api/product/:id', async (req, res) => {
     } catch (error) {
                 res.status(500).json({message: error.message});
 
+    }
+});
+
+app.delete('/api/products/:id', async (req, res) => {
+    try {
+        const {id} = req.params;
+
+        const product = await Product.findByIdAndDelete(id);
+
+        if (!product) {
+            return res.status(404).json({message: "product not found"});
+        }
+
+        res.status(200).json({message: "Product deleted succsessfullt"});
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 });
 
