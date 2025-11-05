@@ -1,4 +1,5 @@
 const Product = require('../models/product.model');
+const User = require('../models/user.model');
 
 
 const getProducts = async (requestAnimationFrame, res) => {
@@ -64,10 +65,36 @@ const createProduct = async (req, res) => {
     }
 }
 
+const createUser = async (req, res) => {
+  try {
+    const { email, password } = req.body; // Get data from request
+    const user = new User({ email, password }); // Create a new user object
+    await user.save(); // Save it in MongoDB
+    res.status(201).json({ message: "User created" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Find user with matching email and password
+  const user = await User.findOne({ email, password });
+
+  if (!user) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+
+  res.json({ message: "Login successful" });
+};
+
 module.exports = {
     getProducts,
     getProduct,
     updatedProduct,
     deleteProduct,
-    createProduct
+    createProduct,
+    createUser,
+    loginUser
 }

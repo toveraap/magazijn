@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Magazijn – VISTA college Registreren</title> 
+  <style> 
+    :root { 
+      --primary: #006a68;   
+      --accent:  #e85a3e; 
+      --bg: #e85a3e; 
+      --text: #1a1a1a;            
+      --btn-text: #ffffff; 
+      --radius: 8px; 
+    } 
+    body { 
+      margin:0; 
+      padding:0; 
+      font-family: Arial, sans-serif; 
+      background-color: var(--bg); 
+      color: var(--text); 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      height:100vh; 
+    } 
+
+    .login-card { 
+      background: white; 
+      padding: 32px; 
+      border-radius: var(--radius); 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+      width: 100%; 
+      max-width: 320px; 
+      text-align:center; 
+    } 
+    .login-card h1 { 
+      margin-top:0; 
+      margin-bottom:24px; 
+      font-size:24px;
+      color: var(--primary);
+    }
+    .login-card label {
+      display:block;
+      text-align:left;
+      margin-bottom:8px;
+      font-size:14px;
+    }
+    .login-card input[type="email"],
+    .login-card input[type="password"] {
+      width:100%;
+      padding:10px;
+      margin-bottom:16px;
+      border:1px solid #ccc;
+      border-radius: var(--radius);
+      font-size:14px;
+    }
+    .login-card button[type="submit"] {
+      width:100%;
+      padding:12px; 
+      font-size:16px; 
+      background-color: var(--primary); 
+      color: var(--btn-text);
+      border:none;
+      border-radius: var(--radius);
+      cursor:pointer;
+    }
+    .login-card button[type="submit"]:hover {
+      background-color: var(--accent);
+    }
+    .login-card .footer {
+      margin-top:18px;
+      font-size:12px;
+      color:#777;
+    }
+
+    .back-btn {
+      margin-bottom: 16px;
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .back-btn:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <h1>VISTA College – Registreren</h1> 
+
+    <!-- Back to login button -->
+    <button class="back-btn" onclick="window.location.href='login.html'">Terug naar inloggen</button>
+
+    <form id="registerForm"> 
+      <label for="email">E-mail</label> 
+      <input type="email" id="email" name="email" placeholder="voeg e-mail in" required />
+
+      <label for="password">Wachtwoord</label>
+      <input type="password" id="password" name="password" placeholder="wachtwoord" required />
+
+      <label for="confirmPassword">Wachtwoord bevestigen</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="bevestig wachtwoord" required />
+
+      <button type="submit">Registreren</button>
+    </form>
+
+    <div class="footer">
+      &copy; 2025 VISTA college • Magazijn
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+      if (password !== confirmPassword) {
+        alert('Wachtwoorden komen niet overeen!');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/products/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('Account aangemaakt! Je kunt nu inloggen.');
+          window.location.href = 'login.html'; // redirect to login after success
+        } else {
+          alert(result.error || 'Fout bij registratie.');
+        }
+      } catch (error) {
+        alert('Er is iets misgegaan bij registratie.');
+        console.error(error);
+      }
+    });
+  </script>
+
+</body>
+</html>

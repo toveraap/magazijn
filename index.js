@@ -11,6 +11,8 @@ app.use(express.urlencoded({extended: false}));
 
 // routes
 app.use("/api/products", productRoute);
+app.use(express.static('public'));
+
  
 app.get('/', (req, res) =>{
     res.send('Hello world');
